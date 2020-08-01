@@ -1,0 +1,7 @@
+auth:
+  personal_access_token: "access-token"
+  login: "github-username"
+
+repo:
+  owner: "repository organization (owner)"
+  name: "repository name"
