@@ -29,7 +29,7 @@ Alternatively, you can use any other location on the system. The program uses th
 passing a configuration file path, e.g.:
 
 ```
-issue-rm -c github-cli
+react-rm -c github-cli
 ```
 
 Edit the configuration file with your values. 
