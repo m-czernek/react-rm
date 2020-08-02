@@ -32,7 +32,29 @@ passing a configuration file path, e.g.:
 react-rm -c github-cli
 ```
 
-Edit the configuration file with your values. 
+Edit the configuration file with your values.
+
+## Installation
+
+Ensure you have:
+
+1. Generated your API token
+1. Copied the `github-cli.yml` file to `~/.config`
+
+To install react-rm:
+
+1. Download the latest binary: [macOS](https://github.com/m-czernek/react-rm/releases/latest/download/react-rm_darwin) or [Linux](https://github.com/m-czernek/react-rm/releases/latest/download/react-rm_linux)
+1. Make the binary executable: `chmod +x ~/Downloads/react-rm_linux`
+1. Copy the binary to $PATH, for example: `sudo cp ~/Downloads/react-rm_linux /usr/local/bin/react-rm`
+
+You can now execute `react-rm`:
+
+```shell
+react-rm -h
+Usage of react-rm:
+  -c string
+    	A path to the YAML configuration file (default: /home/mczernek/.config/github-cli.yml)
+```
 
 ## Building
 
