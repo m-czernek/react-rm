@@ -19,5 +19,9 @@ build-all:
 	GOOS=linux GOARCH=$(GOARCH) $(GOBUILD) -o bin/$(BINARY_NAME)_linux -v $(GOPKG)
 	GOOS=darwin GOARCH=$(GOARCH) $(GOBUILD) -o bin/$(BINARY_NAME)_darwin -v $(GOPKG)
 
+.PHONY: clean
+clean:
+	-rm bin/*
+
 .PHONY: all
 all: build
