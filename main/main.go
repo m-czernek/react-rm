@@ -14,6 +14,7 @@ import (
 
 var configPath string
 var removed int = 0
+var mutex = &sync.Mutex{}
 
 func main() {
 	parseCmdFlags()
@@ -47,6 +48,8 @@ func deleteIssueReactions(wg *sync.WaitGroup, client *github.Client, cfg *Config
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "[WARN] Could not delete reaction %v\nerror:\n%v", reaction, err)
 			} else {
+				mutex.Lock()
+				defer mutex.Unlock()
 				removed++
 			}
 		}
