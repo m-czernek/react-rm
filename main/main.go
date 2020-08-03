@@ -59,7 +59,7 @@ func getDefaultConfigPath() string {
 }
 
 func parseCmdFlags() {
-	flag.StringVar(&configPath, "c", getDefaultConfigPath(), "A path to the YAML configuration file (default: "+getDefaultConfigPath()+")")
+	flag.StringVar(&configPath, "c", getDefaultConfigPath(), "A path to the YAML configuration file")
 	flag.Parse()
 }
 
