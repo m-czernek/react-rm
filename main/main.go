@@ -8,7 +8,7 @@ import (
 	"path"
 	"sync"
 
-	"github.com/google/go-github/v32/github"
+	"github.com/google/go-github/v33/github"
 	"golang.org/x/oauth2"
 )
 
@@ -25,11 +25,18 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	issues, _, err := client.Issues.ListByRepo(context.Background(), cfg.Repo.Owner, cfg.Repo.Name, nil)
+	issues, resp, err := client.Issues.ListByRepo(context.Background(), cfg.Repo.Owner, cfg.Repo.Name, nil)
 	handleError(err, "[ERR] Could not connect to GitHub API, check API token?\n", true)
+	// add paginated results if any
+	for resp.NextPage != 0 {
+		opts := &github.IssueListByRepoOptions{ListOptions: github.ListOptions{Page: resp.NextPage}}
+		nextIssues, nextResp, nextErr := client.Issues.ListByRepo(context.Background(), cfg.Repo.Owner, cfg.Repo.Name, opts)
+		handleError(nextErr, "[ERR] Could not connect to GitHub API, check rate limits?\n", true)
+		issues = append(issues, nextIssues...)
+		resp = nextResp
+	}
 
 	wg.Add(len(issues))
-
 	for _, issue := range issues {
 		go deleteIssueReactions(&wg, client, cfg, *issue.Number)
 	}
