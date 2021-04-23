@@ -11,7 +11,7 @@ This program uses the Github personal access token for authorization and authent
 
 To create a new Github Token, follow the [GitHub documentation](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token#creating-a-token).
 
-This application requires the `repo` access
+This application requires the `repo` access.
 
 ![Image of repository settings](./docs/repo.png)
 
@@ -50,10 +50,15 @@ To install react-rm:
 You can now execute `react-rm`:
 
 ```shell
-react-rm -h
+$ react-rm -h
 Usage of react-rm:
   -c string
     	A path to the YAML configuration file (default: /home/mczernek/.config/github-cli.yml)
+  -l	List people with more than 3 votes
+$ react-rm -l
+Removed 0 issue reactions from repo RedHatTraining/appdev
+
+User john-doe-gh has 9 reactions in the repo
 ```
 
 ## Building
