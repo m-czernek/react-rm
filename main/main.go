@@ -13,8 +13,10 @@ import (
 )
 
 var configPath string
+var listMode bool
 var removed int = 0
 var mutex = &sync.Mutex{}
+var userReactionNumberMap = make(map[string]int)
 
 func main() {
 	parseCmdFlags()
@@ -42,6 +44,15 @@ func main() {
 	}
 	wg.Wait()
 	fmt.Printf("Removed %d issue reactions from repo %v\n", removed, cfg.Repo)
+
+	if listMode {
+		fmt.Printf("\n")
+		for user, numOfReactions := range userReactionNumberMap {
+			if numOfReactions > 3 {
+				fmt.Printf("User %s has %d reactions in the repo\n", user, numOfReactions)
+			}
+		}
+	}
 }
 
 func deleteIssueReactions(wg *sync.WaitGroup, client *github.Client, cfg *Config, issueNumber int) {
@@ -50,14 +61,17 @@ func deleteIssueReactions(wg *sync.WaitGroup, client *github.Client, cfg *Config
 	reactions, _, err := client.Reactions.ListIssueReactions(ctx, cfg.Repo.Owner, cfg.Repo.Name, issueNumber, nil)
 	handleError(err, fmt.Sprintf("[WARN] Could not list reactions for issue %d", issueNumber), false)
 	for _, reaction := range reactions {
+		mutex.Lock()
+		userReactionNumberMap[*reaction.User.Login] += 1
+		mutex.Unlock()
 		if *reaction.User.Login == cfg.Auth.Login {
 			_, err := client.Reactions.DeleteIssueReaction(ctx, cfg.Repo.Owner, cfg.Repo.Name, issueNumber, *reaction.ID)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "[WARN] Could not delete reaction %v\nerror:\n%v", reaction, err)
 			} else {
 				mutex.Lock()
-				defer mutex.Unlock()
 				removed++
+				mutex.Unlock()
 			}
 		}
 	}
@@ -70,6 +84,7 @@ func getDefaultConfigPath() string {
 
 func parseCmdFlags() {
 	flag.StringVar(&configPath, "c", getDefaultConfigPath(), "A path to the YAML configuration file")
+	flag.BoolVar(&listMode, "l", false, "List people with more than 3 votes")
 	flag.Parse()
 }
 
